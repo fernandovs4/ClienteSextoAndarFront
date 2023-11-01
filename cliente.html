@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        #clientData {
+            background-color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        #clientInfo, #clientRentals, #clientSales {
+            list-style: none;
+            padding: 0;
+        }
+
+       
+
+        strong {
+            font-weight: bold;
+        }
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar >li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #555;
+        }
+
+        .client{
+            
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+
+        
+        
+    </style>
+</head>
+<body>
+
+    <ul class="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cadastrar.html">Cadastrar</a></li>
+        <li><a href="excluir.html">Excluir</a></li>
+        <li><a href="listar.html">Listar</a></li>
+        <li><a href="cliente.html"> Cliente</a></li>
+    </ul>
+
+    
+    <div id="clientData">
+            <h3>Detalhes de clientes</h3>
+           <!-- Adicione o campo de entrada e o botão -->
+           <h2>Buscar Cliente por CPF</h2>
+           <input type="text" id="cpfInput" placeholder="Digite o CPF">
+           <button id="buscarClienteButton">Buscar</button>
+        <h2 class="h2">Informações do Cliente</h2>
+        <ul id="clientInfo"></ul>
+
+        <h2 class="h2">Aluguéis</h2>
+        <ul id="clientRentals"></ul>
+
+        <h2 class="h2">Vendas</h2>
+        <ul id="clientSales"></ul>
+
+     
+    </div>
+
+    <script>
+        // Função para extrair o CPF da URL
+        function extractCPF() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get("cpf");
+        }
+
+
+        const cpf = extractCPF();
+
+        h2 = document.querySelector(".h2");
+        h2.style.display = "none";
+
+        
+
+        // Função para buscar um cliente com base no CPF inserido
+        function buscarClientePorCPF() {
+            console.log("aaaaaa");
+            const cpfInput = document.getElementById("cpfInput");
+            const cpf = cpfInput.value;
+
+            if (cpf) {
+                // Faça uma requisição à sua API para obter os detalhes do cliente com o CPF fornecido
+                fetch(`http://127.0.0.1:5000/cliente/1`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            alert('Nenhum cliente encontrado!');
+                            return;
+                        }
+                        const clientInfo = document.getElementById("clientInfo");
+                        clientInfo.innerHTML = ''; // Limpa as informações existentes
+
+                        // Exibe as informações do cliente
+                        const listItem = document.createElement("li");
+                        listItem.innerHTML = `
+                            <strong>Nome:</strong> ${data.nome} <br>
+                            <strong>CPF:</strong> ${data.cpf} <br>
+                            <strong>Endereço:</strong> ${data.endereço} <br>
+                            <strong>Data de Nascimento:</strong> ${data['data de nascimento']} <br>
+                            <strong>Renda:</strong> ${data.renda} <br><br>
+                        `;
+                        clientInfo.appendChild(listItem);
+
+                        // Exibe os aluguéis
+                        const clientRentals = document.getElementById("clientRentals");
+                        data.alugueis.forEach(rental => {
+                            const rentalItem = document.createElement("li");
+                            rentalItem.innerHTML = `
+                                <strong>ID:</strong> ${rental.id} <br>
+                                <strong>ID do Imóvel:</strong> ${rental.id_imovel} <br>
+                                <strong>Data de Término:</strong> ${rental['data de término']} <br>
+                                <strong>CPF do Corretor:</strong> ${rental.cpf_corretor} <br><br>
+                            `;
+                            clientRentals.innerHTML = rentalItem.innerHTML;
+                        });
+
+                        // Exibe as vendas
+                        const clientSales = document.getElementById("clientSales");
+                        data.vendas.forEach(sale => {
+                            const saleItem = document.createElement("li");
+                            saleItem.innerHTML = `
+                                <strong>ID:</strong> ${sale.id} <br>
+                                <strong>ID do Imóvel:</strong> ${sale.id_imovel} <br>
+                                <strong>CPF do Corretor:</strong> ${sale.cpf_corretor} <br><br>
+                            `;
+                            clientSales.innerHTML = saleItem.innerHTML;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar o cliente:', error);
+                    });
+            } else {
+                console.error('Nenhum CPF foi fornecido.');
+            }
+        }
+
+        // Adicione um evento de clique ao botão
+        document.getElementById("buscarClienteButton").addEventListener("click", buscarClientePorCPF);
+
+        // Se um CPF for fornecido na URL, faça a busca automaticamente
+        if (cpf) {
+            buscarClientePorCPF();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Requisição à API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+
+
+      
+        #clientData {
+            background-color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar >li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #555;
+        }
+
+        .client{
+            
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <ul class="navbar" >
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cadastrar.html">Cadastrar</a></li>
+        <li><a href="excluir.html">Excluir</a></li>
+        <li><a href="listar.html">Listar</a></li>
+       <li><a href="cliente.html"> Cliente</a></li>
+    </ul>
+  
+   
+    <div id="clientData" style="display: none;">
+        <h2>Clientes</h2>
+       
+        <ul id="clientList"></ul>
+    </div>
+
+        <script>
+
+            
+    
+            // Faça uma requisição à sua API
+            fetch('http://127.0.0.1:5000', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.length === 0) {
+                        alert('Nenhum cliente cadastrado!');
+                        return;
+                    }
+                    const clientList = document.getElementById("clientList");
+                    clientList.innerHTML = ''; // Limpa a lista existente
+
+                    // Itera sobre os dados e cria elementos para exibi-los
+                    data.forEach(client => {
+                        const listItem = document.createElement("li");
+                        listItem.classList.add("client");
+                        
+                        listItem.innerHTML = `
+                            <strong>Nome:</strong> ${client.nome} <br>
+                            <strong>CPF:</strong> ${client.cpf} <br>
+                            <strong>Endereço:</strong> ${client.endereço} <br>
+                            <strong>Data de Nascimento:</strong> ${client['data de nascimento']} <br>
+                            <strong>Renda:</strong> ${client.renda} <br><br>
+                        `;
+
+                        // Adicione o evento onClick
+                        listItem.onclick = function () {
+                            // Redirecione o usuário para a página de detalhes do cliente com o CPF como parâmetro
+                            window.location.href = `cliente/${client.cpf}`;
+                        };
+                        clientList.appendChild(listItem);
+                    });
+
+
+                    // Exibe os dados
+                    const clientData = document.getElementById("clientData");
+                    clientData.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar dados da API:', error);
+                });
+        
+    </script>
+</body>
+</html>
