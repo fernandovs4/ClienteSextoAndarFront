@@ -48,29 +48,35 @@
         }
 
         p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            text-align: center;
         }
 
         .main-content {
             margin-top: 2em;
             padding: 3rem;
-            text-align: center;
         }
 
         ul {
-            list-style-type: none;
             margin-left: 20px;
-
         }
+
+        .main-content li {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            margin-left: 20%;
+        }	
 
         .cta {
             background-color: #ecf0f1;
             text-align: center;
-            padding: 4rem 0;
+            padding: 4rem;
+            padding-top: 7rem;
+            height: 100%;
         }
 
         h2 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
             color: #333;
         }
@@ -102,6 +108,13 @@
             bottom: 0;
             width: 100%;
         }
+
+        .wrapper {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -114,22 +127,27 @@
     <li><a href="cliente.html">Cliente</a></li>
 </ul>
 
-<section class="main-content">
-    <p>Seja bem-vindo ao Sexto Andar, a sua solução para aluguel de imóveis descomplicado e conveniente. Encontre o lar perfeito de acordo com as suas necessidades e estilo de vida.</p>
-    <p>Por que escolher o Sexto Andar?</p>
-    <ul>
-        <li>Ampla seleção de imóveis disponíveis para aluguel.</li>
-        <li>Busca avançada para encontrar a casa ou apartamento ideal.</li>
-        <li>Processo de aluguel simples e transparente.</li>
-        <li>Atendimento ao cliente dedicado para ajudar em cada etapa.</li>
-    </ul>
-</section>
+<div class="wrapper">
+    <section class="main-content">
+        <p>Seja bem-vindo ao Sexto Andar, a sua solução para aluguel de imóveis descomplicado e conveniente. Encontre o lar perfeito de acordo com as suas necessidades e estilo de vida.</p>
+        <br><br>
+        <p>Por que escolher o Sexto Andar?</p>
+        <br>
+        <ul>
+            <li>Ampla seleção de imóveis disponíveis para aluguel.</li>
+            <li>Busca avançada para encontrar a casa ou apartamento ideal.</li>
+            <li>Processo de aluguel simples e transparente.</li>
+            <li>Atendimento ao cliente dedicado para ajudar em cada etapa.</li>
+        </ul>
+    </section>
 
-<section class="cta">
-    <h2>Comece a sua jornada de aluguel hoje</h2>
-    <p>Encontre o imóvel perfeito que se encaixa no seu estilo de vida. Cadastre-se agora e descubra todas as vantagens do Sexto Andar.</p>
-    <a href="cadastrar.html" class="button">Cadastrar imóvel</a>
-</section>
+    <section class="cta">
+        <h2>Comece a sua jornada de aluguel hoje</h2>
+        <p>Encontre o imóvel perfeito que se encaixa no seu estilo de vida. Cadastre-se agora e descubra todas as vantagens do Sexto Andar.</p>
+        <br>
+        <a href="cadastrar.html" class="button">Cadastrar imóvel</a>
+    </section>
+</div>
 
 <footer>
     <p>&copy; 2023 Sexto Andar. Todos os direitos reservados.</p>
