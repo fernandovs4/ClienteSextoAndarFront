@@ -88,53 +88,91 @@
 
         <script>
 
-            
-    
-            // Faça uma requisição à sua API
-            fetch('http://127.0.0.1:5000', {
+            const getClientes = (token)=>{
+            dados = ''
+                fetch('http://34.210.87.17:8080/cliente', {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'token': token
                 }
-            })
+              })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+                if(data.length === 0) {
+                    alert('Nenhum cliente cadastrado!');
+                    return;
+                }
+                const clientList = document.getElementById("clientList");
+                clientList.innerHTML = ''; // Limpa a lista existente
+
+                // Itera sobre os dados e cria elementos para exibi-los
+                data.forEach(client => {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("client");
+                    
+                    listItem.innerHTML = `
+                        <strong>Nome:</strong> ${client.nome} <br>
+                        <strong>CPF:</strong> ${client.cpf} <br>
+                        <strong>Endereço:</strong> ${client.endereco} <br>
+                        <strong>Data de Nascimento:</strong> ${client.dataNascimento} <br>
+                        <strong>Renda:</strong> ${client.renda} <br><br>
+                    `;
+
+                    // Adicione o evento onClick
+                    
+                    clientList.appendChild(listItem);
+                });
+            }
+                
+                )
+
+             
+
+
+            // Exibe os dados
+            const clientData = document.getElementById("clientData");
+            clientData.style.display = "block";
+        
+
+            }
+
+            body = {
+                email : "admin@sa.com", 
+                password : "123456"
+            }
+            console.log(localStorage.getItem("token"))
+            if (localStorage.getItem("token")){
+                token = localStorage.getItem("token");
+                getClientes(token)
+
+            }else{
+                fetch("http://54.71.150.144:8082/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    
+                }, 
+                body: JSON.stringify(body) 
+
+                })
                 .then(response => response.json())
                 .then(data => {
-                    if(data.length === 0) {
-                        alert('Nenhum cliente cadastrado!');
-                        return;
-                    }
-                    const clientList = document.getElementById("clientList");
-                    clientList.innerHTML = ''; // Limpa a lista existente
-
-                    // Itera sobre os dados e cria elementos para exibi-los
-                    data.forEach(client => {
-                        const listItem = document.createElement("li");
-                        listItem.classList.add("client");
-                        
-                        listItem.innerHTML = `
-                            <strong>Nome:</strong> ${client.nome} <br>
-                            <strong>CPF:</strong> ${client.cpf} <br>
-                            <strong>Endereço:</strong> ${client.endereço} <br>
-                            <strong>Data de Nascimento:</strong> ${client['data de nascimento']} <br>
-                            <strong>Renda:</strong> ${client.renda} <br><br>
-                        `;
-
-                        // Adicione o evento onClick
-                        listItem.onclick = function () {
-                            // Redirecione o usuário para a página de detalhes do cliente com o CPF como parâmetro
-                            window.location.href = `cliente/${client.cpf}`;
-                        };
-                        clientList.appendChild(listItem);
-                    });
-
-
-                    // Exibe os dados
-                    const clientData = document.getElementById("clientData");
-                    clientData.style.display = "block";
+                    console.log(data['token'])
+                    localStorage.setItem("token", data['token']);
+                    getClientes(data['token'])
                 })
                 .catch(error => {
                     console.error('Erro ao carregar dados da API:', error);
                 });
+
+
+                
+
+            }
+          
         
     </script>
 </body>

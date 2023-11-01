@@ -136,61 +136,100 @@
             const cpf = cpfInput.value;
 
             if (cpf) {
-                // Faça uma requisição à sua API para obter os detalhes do cliente com o CPF fornecido
-                fetch(`http://127.0.0.1:5000/cliente/1`, {
-                    method: 'GET',
+                body = {
+                    email : "admin@sa.com", 
+                    password : "123456"
+                }
+                
+                if (localStorage.getItem("token")){
+                    console.log(localStorage.getItem("token"));
+                    token = localStorage.getItem("token");
+                    cadastrarCliente(token['token'])
+
+                }else{
+                    fetch("http://54.71.150.144:8082/login", {
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+                        'Content-Type': 'application/json',
+                        
+                    }, 
+                    body: JSON.stringify(body) 
+
+                    })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.length === 0) {
-                            alert('Nenhum cliente encontrado!');
-                            return;
-                        }
-                        const clientInfo = document.getElementById("clientInfo");
-                        clientInfo.innerHTML = ''; // Limpa as informações existentes
-
-                        // Exibe as informações do cliente
-                        const listItem = document.createElement("li");
-                        listItem.innerHTML = `
-                            <strong>Nome:</strong> ${data.nome} <br>
-                            <strong>CPF:</strong> ${data.cpf} <br>
-                            <strong>Endereço:</strong> ${data.endereço} <br>
-                            <strong>Data de Nascimento:</strong> ${data['data de nascimento']} <br>
-                            <strong>Renda:</strong> ${data.renda} <br><br>
-                        `;
-                        clientInfo.appendChild(listItem);
-
-                        // Exibe os aluguéis
-                        const clientRentals = document.getElementById("clientRentals");
-                        data.alugueis.forEach(rental => {
-                            const rentalItem = document.createElement("li");
-                            rentalItem.innerHTML = `
-                                <strong>ID:</strong> ${rental.id} <br>
-                                <strong>ID do Imóvel:</strong> ${rental.id_imovel} <br>
-                                <strong>Data de Término:</strong> ${rental['data de término']} <br>
-                                <strong>CPF do Corretor:</strong> ${rental.cpf_corretor} <br><br>
-                            `;
-                            clientRentals.innerHTML = rentalItem.innerHTML;
-                        });
-
-                        // Exibe as vendas
-                        const clientSales = document.getElementById("clientSales");
-                        data.vendas.forEach(sale => {
-                            const saleItem = document.createElement("li");
-                            saleItem.innerHTML = `
-                                <strong>ID:</strong> ${sale.id} <br>
-                                <strong>ID do Imóvel:</strong> ${sale.id_imovel} <br>
-                                <strong>CPF do Corretor:</strong> ${sale.cpf_corretor} <br><br>
-                            `;
-                            clientSales.innerHTML = saleItem.innerHTML;
-                        });
+                        console.log(data['token'])
+                        localStorage.setItem("token", data['token']);
+                        cadastrarCliente(data['token'])
                     })
                     .catch(error => {
-                        console.error('Erro ao buscar o cliente:', error);
+                        console.error('Erro ao carregar dados da API:', error);
                     });
+                   
+                }
+                // Faça uma requisição à sua API para obter os detalhes do cliente com o CPF fornecido
+
+
+                const cadastrarCliente  = (token) => {
+                    console.log(token);
+                    fetch(`http://34.210.87.17:8080/cliente/${cpf}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': token
+                    }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length === 0) {
+                                alert('Nenhum cliente encontrado!');
+                                return;
+                            }
+                            const clientInfo = document.getElementById("clientInfo");
+                            clientInfo.innerHTML = ''; // Limpa as informações existentes
+
+                            // Exibe as informações do cliente
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = `
+                                <strong>Nome:</strong> ${data.nome} <br>
+                                <strong>CPF:</strong> ${data.cpf} <br>
+                                <strong>Endereço:</strong> ${data.endereço} <br>
+                                <strong>Data de Nascimento:</strong> ${data['data de nascimento']} <br>
+                                <strong>Renda:</strong> ${data.renda} <br><br>
+                            `;
+                            clientInfo.appendChild(listItem);
+
+                            // Exibe os aluguéis
+                            const clientRentals = document.getElementById("clientRentals");
+                            data.alugueis.forEach(rental => {
+                                const rentalItem = document.createElement("li");
+                                rentalItem.innerHTML = `
+                                    <strong>ID:</strong> ${rental.id} <br>
+                                    <strong>ID do Imóvel:</strong> ${rental.id_imovel} <br>
+                                    <strong>Data de Término:</strong> ${rental['data de término']} <br>
+                                    <strong>CPF do Corretor:</strong> ${rental.cpf_corretor} <br><br>
+                                `;
+                                clientRentals.innerHTML = rentalItem.innerHTML;
+                            });
+
+                            // Exibe as vendas
+                            const clientSales = document.getElementById("clientSales");
+                            data.vendas.forEach(sale => {
+                                const saleItem = document.createElement("li");
+                                saleItem.innerHTML = `
+                                    <strong>ID:</strong> ${sale.id} <br>
+                                    <strong>ID do Imóvel:</strong> ${sale.id_imovel} <br>
+                                    <strong>CPF do Corretor:</strong> ${sale.cpf_corretor} <br><br>
+                                `;
+                                clientSales.innerHTML = saleItem.innerHTML;
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar o cliente:', error);
+                        });
+                        
+                    }
+               
             } else {
                 console.error('Nenhum CPF foi fornecido.');
             }
