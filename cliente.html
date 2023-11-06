@@ -27,7 +27,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
+        
         h2 {
             font-size: 20px;
             margin-bottom: 10px;
@@ -39,7 +39,12 @@
         }
 
        
-
+        #cpfInput{
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
         strong {
             font-weight: bold;
         }
@@ -80,7 +85,9 @@
             padding: 0;
         }
         
-
+        input{
+            width: 90px;
+        }
         
         
     </style>
@@ -134,45 +141,15 @@
             console.log("aaaaaa");
             const cpfInput = document.getElementById("cpfInput");
             const cpf = cpfInput.value;
-
+            console.log(`http://34.210.87.17:8080/cliente/${cpf}`)
             if (cpf) {
-                body = {
-                    email : "admin@sa.com", 
-                    password : "123456"
-                }
-                
-                if (localStorage.getItem("token")){
-                    console.log(localStorage.getItem("token"));
-                    token = localStorage.getItem("token");
-                    cadastrarCliente(token['token'])
-
-                }else{
-                    fetch("http://54.71.150.144:8082/login", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        
-                    }, 
-                    body: JSON.stringify(body) 
-
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data['token'])
-                        localStorage.setItem("token", data['token']);
-                        cadastrarCliente(data['token'])
-                    })
-                    .catch(error => {
-                        console.error('Erro ao carregar dados da API:', error);
-                    });
-                   
-                }
-                // Faça uma requisição à sua API para obter os detalhes do cliente com o CPF fornecido
+                    
 
 
                 const cadastrarCliente  = (token) => {
-                    console.log(token);
+                 
                     fetch(`http://34.210.87.17:8080/cliente/${cpf}`, {
+
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -193,8 +170,8 @@
                             listItem.innerHTML = `
                                 <strong>Nome:</strong> ${data.nome} <br>
                                 <strong>CPF:</strong> ${data.cpf} <br>
-                                <strong>Endereço:</strong> ${data.endereço} <br>
-                                <strong>Data de Nascimento:</strong> ${data['data de nascimento']} <br>
+                                <strong>Endereço:</strong> ${data.endereço == undefined? "Sem endereço": data.endereço} <br>
+                                <strong>Data de Nascimento:</strong> ${data['data de nascimento'] == undefined? "Sem data": data['data de nascimento'] } <br>
                                 <strong>Renda:</strong> ${data.renda} <br><br>
                             `;
                             clientInfo.appendChild(listItem);
@@ -209,8 +186,12 @@
                                     <strong>Data de Término:</strong> ${rental['data de término']} <br>
                                     <strong>CPF do Corretor:</strong> ${rental.cpf_corretor} <br><br>
                                 `;
+                                
                                 clientRentals.innerHTML = rentalItem.innerHTML;
                             });
+                            if(data.alugueis.length == 0){
+                                clientRentals.innerHTML = "<p> Sem alugueis </p>";
+                            }
 
                             // Exibe as vendas
                             const clientSales = document.getElementById("clientSales");
@@ -223,12 +204,50 @@
                                 `;
                                 clientSales.innerHTML = saleItem.innerHTML;
                             });
+                            console.log(data.vendas.length);
+                            if(data.vendas.length == 0){
+                                clientSales.innerHTML = "<p> Sem vendas </p>";
+                            }
                         })
                         .catch(error => {
                             console.error('Erro ao buscar o cliente:', error);
                         });
                         
                     }
+
+                    body = {
+                    email : "admin@sa.com", 
+                    password : "123456"
+                }
+                
+                    if (localStorage.getItem("token")){
+                        console.log(localStorage.getItem("token"));
+                        token = localStorage.getItem("token");
+                    
+                        cadastrarCliente(token)
+
+                    }else{
+                        fetch("http://54.71.150.144:8082/login", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            
+                        }, 
+                        body: JSON.stringify(body) 
+
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data['token'])
+                            localStorage.setItem("token", data['token']);
+                            cadastrarCliente(data['token'])
+                        })
+                        .catch(error => {
+                            console.error('Erro ao carregar dados da API:', error);
+                        });
+                    
+                    }
+                // Faça uma requisição à sua API para obter os detalhes do cliente com o CPF fornecido
                
             } else {
                 console.error('Nenhum CPF foi fornecido.');
